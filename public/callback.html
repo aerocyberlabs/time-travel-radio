@@ -43,9 +43,7 @@
             const accessToken = params.get('access_token');
             const state = params.get('state');
             
-            const targetOrigin = window.location.hostname === 'localhost' 
-                ? 'http://localhost:3001'
-                : 'https://oyster-app-k3xwg.ondigitalocean.app';
+            const targetOrigin = 'https://oyster-app-k3xwg.ondigitalocean.app';
 
             if (accessToken) {
                 window.opener.postMessage({

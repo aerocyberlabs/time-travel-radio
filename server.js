@@ -4,9 +4,15 @@ const axios = require('axios');
 const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3001;
-const SPOTIFY_REDIRECT_URI = process.env.NODE_ENV === 'production' 
-    ? 'https://your-domain.com/callback'
-    : 'http://localhost:3001/callback';
+const SPOTIFY_REDIRECT_URI = 'https://oyster-app-k3xwg.ondigitalocean.app/callback';
+
+const SPOTIFY_SCOPES = [
+    'playlist-modify-public',
+    'playlist-modify-private'
+].join(' ');
+
+// Update the Spotify authorization URL
+const authUrl = `https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&response_type=token&redirect_uri=${encodeURIComponent(SPOTIFY_REDIRECT_URI)}&scope=${encodeURIComponent(SPOTIFY_SCOPES)}`;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -197,7 +203,7 @@ async function getTracksFromRelease(releaseId) {
         const response = await retryRequest(async () => {
             return axios.get(`https://musicbrainz.org/ws/2/recording`, {
                 headers: {
-                    'User-Agent': 'TTR/1.0 (catalysed@duck.com)'
+                    'User-Agent': process.env.MUSICBRAINZ_USER_AGENT
                 },
                 params: {
                     release: releaseId,
@@ -238,7 +244,7 @@ async function fetchSongs(month, year, progressCallback) {
             const response = await retryRequest(async () => {
                 return axios.get(`https://musicbrainz.org/ws/2/recording`, {
                     headers: {
-                        'User-Agent': 'TTR/1.0 (catalysed@duck.com)'
+                        'User-Agent': process.env.MUSICBRAINZ_USER_AGENT
                     },
                     params: {
                         query: `date:${y}-${monthStr}`,
