@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Processing Spotify Authorization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #282828;
+            color: white;
+        }
+        .loading {
+            text-align: center;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #1DB954;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading">
+        <div class="spinner"></div>
+        <h2>Connecting to Spotify...</h2>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const hash = window.location.hash.substring(1);
+            const params = new URLSearchParams(hash);
+            const accessToken = params.get('access_token');
+            const state = params.get('state');
+            
+            if (accessToken && state === localStorage.getItem('spotify_auth_state')) {
+                const songs = JSON.parse(localStorage.getItem('playlist_songs'));
+                
+                // Debug logs
+                console.log('Songs from localStorage:', songs);
+                console.log('Sample song with URI:', songs[0]);
+                
+                const origin = window.location.origin;
+                
+                fetch(`${origin}/create-spotify-playlist`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        accessToken,
+                        songs
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.opener.postMessage({ 
+                            type: 'SPOTIFY_SUCCESS',
+                            playlistId: data.playlistId,
+                            trackCount: data.trackCount
+                        }, '*');
+                    } else {
+                        throw new Error(data.message || 'Failed to create playlist');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    window.opener.postMessage({ 
+                        type: 'SPOTIFY_ERROR', 
+                        error: error.message 
+                    }, '*');
+                });
+            } else {
+                window.opener.postMessage({ 
+                    type: 'SPOTIFY_ERROR', 
+                    error: 'Authentication failed' 
+                }, '*');
+            }
+        };
+    </script>
+</body>
+</html>

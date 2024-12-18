@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Travel Radio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbanner.js?client=ca-pub-YOUR_PUBLISHER_ID"
+        crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Ad Spaces -->
+        <div class="ad-space ad-left">Ad Space Left</div>
+        <div class="ad-space ad-right">Ad Space Right</div>
+        <div class="ad-space ad-top">Ad Space Top</div>
+        <div class="ad-space ad-bottom">Ad Space Bottom</div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="glass-container">
+                <!-- Initial View -->
+                <div id="initial-view">
+                    <h1>Time Travel Radio</h1>
+                    <p class="subtitle">Journey through time with music curated uniquely for you</p>
+                    
+                    <form id="birthdayForm">
+                        <div class="input-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" required placeholder="Enter your name">
+                        </div>
+                        <div class="input-group">
+                            <label for="birthday">Select Your Birthday</label>
+                            <input type="date" id="birthday" required>
+                        </div>
+                        <button type="submit" class="submit-btn">Generate Playlist</button>
+                    </form>
+
+                    <!-- Progress Bar -->
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress-bar" id="progressBar"></div>
+                        <div class="progress-text" id="progressText">Generating playlist...</div>
+                    </div>
+                </div>
+
+                <!-- Playlist View (Initially Hidden) -->
+                <div id="playlist-view" style="display: none;">
+                    <h1>Your Time Travel Playlist</h1>
+                    <div class="playlist-actions">
+                        <button id="spotifyButton" class="spotify-button">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_without_text.svg/168px-Spotify_logo_without_text.svg.png" alt="Spotify">
+                            Save to Spotify
+                        </button>
+                        <button id="shareButton" class="share-button">
+                            <span>🔗</span> Share Playlist
+                        </button>
+                        <button id="homeButton" class="home-button">
+                            <span>↩</span> New Playlist
+                        </button>
+                    </div>
+                    <div id="playlist"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="script.js"></script>
+
+    <!-- Add before closing body tag, after main content -->
+    <footer class="legal-footer">
+        <nav class="legal-links">
+            <a href="/privacy.html">Privacy Policy</a>
+            <a href="/terms.html">Terms of Service</a>
+            <a href="/cookies.html">Cookie Policy</a>
+        </nav>
+    </footer>
+
+    <!-- Add before closing body tag -->
+    <div id="cookie-consent" class="cookie-banner">
+        <p>We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.</p>
+        <div class="cookie-buttons">
+            <button id="accept-cookies" class="cookie-btn accept">Accept</button>
+            <a href="/cookies.html" class="cookie-btn more">Learn More</a>
+        </div>
+    </div>
+</body>
+</html>
