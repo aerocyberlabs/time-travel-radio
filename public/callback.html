@@ -43,49 +43,21 @@
             const accessToken = params.get('access_token');
             const state = params.get('state');
             
-            if (accessToken && state === localStorage.getItem('spotify_auth_state')) {
-                const songs = JSON.parse(localStorage.getItem('playlist_songs'));
-                
-                // Debug logs
-                console.log('Songs from localStorage:', songs);
-                console.log('Sample song with URI:', songs[0]);
-                
-                const origin = window.location.origin;
-                
-                fetch(`${origin}/create-spotify-playlist`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        accessToken,
-                        songs
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.opener.postMessage({ 
-                            type: 'SPOTIFY_SUCCESS',
-                            playlistId: data.playlistId,
-                            trackCount: data.trackCount
-                        }, '*');
-                    } else {
-                        throw new Error(data.message || 'Failed to create playlist');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    window.opener.postMessage({ 
-                        type: 'SPOTIFY_ERROR', 
-                        error: error.message 
-                    }, '*');
-                });
+            const targetOrigin = window.location.hostname === 'localhost' 
+                ? 'http://localhost:3001'
+                : 'https://oyster-app-k3xwg.ondigitalocean.app';
+
+            if (accessToken) {
+                window.opener.postMessage({
+                    type: 'SPOTIFY_SUCCESS',
+                    accessToken: accessToken,
+                    state: state
+                }, targetOrigin);
             } else {
-                window.opener.postMessage({ 
-                    type: 'SPOTIFY_ERROR', 
-                    error: 'Authentication failed' 
-                }, '*');
+                window.opener.postMessage({
+                    type: 'SPOTIFY_ERROR',
+                    error: 'Failed to get access token'
+                }, targetOrigin);
             }
         };
     </script>
